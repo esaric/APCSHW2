@@ -62,23 +62,24 @@ public class KnightsTour {
 		
 		/*System.out.println(this);
 		wait(20);*/
+		board[x][y] = currentMove;
 		
-		if (currentMove > size * size) {
+		if (currentMove == size * size) {
 			return true;
 		}
 		if (x >= size || x < 0 || y >= size || y < 0) {
 			return false;
 		}
-		if (board[x][y] == 0) {
-			board[x][y] = currentMove;
-			return solve(x + 2, y + 1, currentMove + 1) ||
-				   solve(x + 2, y - 1, currentMove + 1) ||
-				   solve(x + 1, y + 2, currentMove + 1) ||
-				   solve(x + 1, y - 2, currentMove + 1) ||
-				   solve(x - 1, y + 2, currentMove + 1) ||
-				   solve(x - 1, y - 2, currentMove + 1) ||
-				   solve(x - 2, y + 1, currentMove + 1) ||
-				   solve(x - 2, y - 1, currentMove + 1);
+		if (solve(x + 2, y + 1, currentMove + 1) ||
+			solve(x + 2, y - 1, currentMove + 1) ||
+			solve(x + 1, y + 2, currentMove + 1) ||
+			solve(x + 1, y - 2, currentMove + 1) ||
+			solve(x - 1, y + 2, currentMove + 1) ||
+			solve(x - 1, y - 2, currentMove + 1) ||
+			solve(x - 2, y + 1, currentMove + 1) ||
+			solve(x - 2, y - 1, currentMove + 1)) {
+				return true;
+			}
 		}
 		board[x][y] = 0;
 		return false;
