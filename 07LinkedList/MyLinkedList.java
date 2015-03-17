@@ -1,26 +1,19 @@
-public class MyLinkedList {
+public class MyLinkedList<T> {
 	
 	private int length;
-	private LNode start;
-	
-	public static void main(String[]args) {
-		MyLinkedList l = new MyLinkedList();
-		System.out.println(l);
-		l.add(5);
-		System.out.println(l);
-		l.add(7);
-		System.out.println(l);
-		System.out.println(l.get(0));
-		System.out.println(l.get(1));
-	}
+	private LNode<T> start;
+	private LNode<T> end;
 	
 	public MyLinkedList() {
 		length = 0;
 	}
 	
+	public String name() {
+		return "saric.elias";
+	}	
 	public String toString() {
 		String output = "";
-		LNode node = start;
+		LNode<T> node = start;
 		try {
 			while (true) { //dank infinite loops
 				output += node.getData() + " ";
@@ -31,31 +24,75 @@ public class MyLinkedList {
 		}
 	}
 	
-	public void add(int value) {
-		LNode newStart = new LNode(value, start);
-		start = newStart;
+	public boolean add(T value) {
+		LNode<T> node = new LNode<T>(value);
+		if (length == 0) {
+			start = node;
+			end = node;
+		}else {
+			end.setNext(node);
+			end = node;
+		}
 		length++;
+		return true;
+	}
+	public boolean add(int index, T value) {
+		if (index < 0 || index > size()) {
+			throw new IndexOutOfBoundsException();
+		}
+		LNode<T> node = new LNode<T>(value, start);
+		if (index == size()) {
+			return add(value);
+		}else if (index == 0) {
+			start = node;
+		}else {
+			node.setNext(getNode(index, start));
+			getNode(index-1, start).setNext(node);
+		}
+		length++;
+		return true;
 	}
 	
-	// work in progress
-	public int remove(int index) {
-		return removeHelp(index, start).getData();
-	}
-	public LNode removeHelp(int index, int current) {
-		if (index == 0) {
-			return current.getData();
+	public T remove(int index) {
+		if (index < 0 || index > size() - 1) {
+			throw new IndexOutOfBoundsException();
 		}
-		return removeHelp(index-1, current.getNext());
+		T removed = getNode(index, start).getData();
+		if (size() == 1) {
+			start = null;
+			end = null;
+		}else if (index == size() - 1) {
+			end = getNode(index - 1, start);
+			end.setNext(null);
+		}else if (index == 0) {
+			start = getNode(1, start);
+		}else {
+			getNode(index - 1, start).setNext(getNode(index + 1, start));
+		}
+		length--;
+		return removed;
 	}
 	
-	public int get(int index) {
-		return getHelp(index, start);
+	public T get(int index) {
+		return getNode(index, start).getData();
 	}
-	private int getHelp(int index, LNode current) {
-		if (index == 0) {
-			return current.getData();
+	private LNode<T> getNode(int index, LNode<T> current) {
+		while (index > 0) {
+			current = current.getNext();
+			index--;
 		}
-		return getHelp(index-1, current.getNext());
+		return current;
+	}
+	
+	public int indexOf(T value) {
+		LNode<T> currentNode = start;
+		for (int i = 0; i < size(); i++) {
+			if (value.equals(currentNode.getData())) {
+				return i;
+			}
+			currentNode = currentNode.getNext();
+		}
+		return -1;
 	}
 	
 	public int size() {
