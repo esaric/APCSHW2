@@ -8,6 +8,7 @@ public class Maze {
     private static final int DFS = 0;
     private static final int BFS = 1;
     private char[][] array = new char[][]{
+	//0   1   2   3   4
 	{'#','#','#','#','#'},
 	{'#','S','#','E','#'},
 	{'#',' ',' ',' ','#'},
@@ -38,14 +39,6 @@ public class Maze {
 		}
 		return ans;
     }
-    
-    private boolean solve(int type) {
-		Coordinate start = findStart();
-		//System.out.println(start);
-		Frontier front = new Frontier();
-		front.enqueue(start);
-		return true;
-    }
 
     private Coordinate findStart() {
 		for (int i = 0; i < array.length; i++) {
@@ -59,10 +52,54 @@ public class Maze {
     }
 
     public boolean solveBFS(boolean animate) {
-		return solve(BFS);
+		Frontier front = new Frontier();
+		front.enqueue(findStart());
+		while (!front.isEmpty()) {
+			int y = front.peek().getY();
+			int x = front.peek().getX();
+			Coordinate removed = front.peek();
+			if (array[y][x] == 'E') {
+				while (removed != null) {
+					array[removed.getY()][removed.getX()] = '@';
+					removed = removed.getPrevious();
+					if (animate) {
+						try {
+							Thread.sleep(500);
+						} catch(InterruptedException ex) {
+							Thread.currentThread().interrupt();
+						}
+						System.out.println(this);
+					}
+				}
+				return true;
+			}
+			array[y][x] = 'X';
+			if (array[y+1][x] != '#' && array[y+1][x] != 'X') {
+				front.enqueue(new Coordinate(x, y+1, front.peek()));
+			}
+			if (array[y-1][x] != '#' && array[y-1][x] != 'X') {
+				front.enqueue(new Coordinate(x, y-1, front.peek()));
+			}
+			if (array[y][x+1] != '#' && array[y][x+1] != 'X') {
+				front.enqueue(new Coordinate(x+1, y, front.peek()));
+			}
+			if (array[y][x-1] != '#' && array[y][x-1] != 'X') {
+				front.enqueue(new Coordinate(x-1, y, front.peek()));
+			}
+			front.dequeue();
+			if (animate) {
+				try {
+					Thread.sleep(500);
+				} catch(InterruptedException ex) {
+					Thread.currentThread().interrupt();
+				}
+				System.out.println(this);
+			}
+		}
+		return false;
     }
     public boolean solveDFS(boolean animate) {
-		return solve(DFS);
+		return true;
     }
     public boolean solveBFS() {return solveBFS(false);}
     public boolean solveDFS() {return solveDFS(false);}
@@ -91,6 +128,11 @@ public class Maze {
     private class Frontier{
 	
 		private MyDeque<Coordinate> queue = new MyDeque<Coordinate>();
+		
+		public String toString() {
+			System.out.println(queue);
+			return "";
+		}
 
 		public Coordinate enqueue(Coordinate cor) {
 			queue.addLast(cor);
@@ -102,12 +144,14 @@ public class Maze {
 		public Coordinate peek() {
 			return queue.getFirst();
 		}
+		public boolean isEmpty() {
+			return queue.getLength() == 0;
+		}
 
     }
 
     public static void main(String[]args) {
 		Maze maze = new Maze();
-		System.out.println(maze);
-		maze.solve(1);
+		maze.solveBFS(true);
     }
 }

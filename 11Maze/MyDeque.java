@@ -21,8 +21,8 @@ public class MyDeque<T> {
             output += array[(head+index) % array.length] + " ";
             index++;
         }
-        //return "[ " + output + "]";
-        return "[ " + output + "] " + "Tail: " + tail + " Head: " + head + "\n" + Arrays.toString(array);
+        return "[ " + output + "]";
+        //return "[ " + output + "] " + "Tail: " + tail + " Head: " + head + "\n" + Arrays.toString(array);
     }
 
     public T getFirst() {
@@ -39,10 +39,10 @@ public class MyDeque<T> {
 	    }
     	T output = (T)array[head];
     	array[head] = null;
-    	if (head == 0) {
-    	    head = array.length - 1;
+    	if (head == array.length - 1) {
+    	    head = 0;
     	}else {
-    	    head--;
+    	    head++;
     	}
     	size--;
     	return output;
@@ -54,10 +54,10 @@ public class MyDeque<T> {
     	}
     	T output = (T)array[tail];
     	array[tail] = null;
-    	if (tail == array.length - 1) {
-    	    tail = 0;
+    	if (tail == 0) {
+    	    tail = array.length - 1;
     	}else {
-    	    tail++;
+    	    tail--;
     	}
     	size--;
     	return output;
@@ -67,7 +67,7 @@ public class MyDeque<T> {
         if (size == 0) {
             array[0] = value;
         }else{
-            if (head == tail + 1) {
+            if (size == array.length) {
                 resize();
             }
             if (head == 0) {
@@ -84,10 +84,10 @@ public class MyDeque<T> {
         if (size == 0) {
             array[0] = value;
         }else {
-            if (head == tail + 1) {
+            if (size == array.length) {
                 resize();
             }
-            if (tail == array.length) {
+            if (tail == array.length - 1) {
                 tail = 0;
             }else {
                 tail++;
@@ -109,6 +109,10 @@ public class MyDeque<T> {
 	    array = newArray;
     }
     
+	public int getLength() {
+		return size;
+	}
+	
     public static void main(String[]args) {
         MyDeque<Integer> d = new MyDeque<Integer>();
         d.addFirst(5);
