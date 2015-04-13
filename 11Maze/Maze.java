@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 public class Maze {
     
@@ -7,28 +8,29 @@ public class Maze {
     private static final String show =  "\033[?25h";
     private static final int DFS = 0;
     private static final int BFS = 1;
-    private char[][] array = new char[][]{
-	//0   1   2   3   4
-	{'#','#','#','#','#'},
-	{'#','S','#','E','#'},
-	{'#',' ',' ',' ','#'},
-	{'#','#','#','#','#'}
-    };
+    private char[][] array;
     
 
     public Maze() {}
 
     public Maze(String filename) {
-	//readFileIn(filename);
+		try {
+			Scanner in = new Scanner(new File(filename));
+			ArrayList<String> lines = new ArrayList<String>();
+			while (in.hasNextLine()) {
+				lines.add(in.nextLine());
+			}
+			array = new char[lines.size()][lines.get(0).length()];
+			for (int i = 0; i < array.length; i++) {
+				for (int j = 0; j < array[0].length; j++) {
+					array[i][j] = lines.get(i).charAt(j);
+				}
+			}
+		}catch (FileNotFoundException e) {
+			System.out.println("File not found");
+		}
     }
-    /*
-    private void readFileIn(String filename) {
-	Scanner in = new Scanner(new File(filename));
-	while (in.hasNextLine()) {
-	    in.next
-	}
-    }
-    */
+
     public String toString() {
 		String ans = "";
 		for (int i = 0; i < array.length; i++) {
@@ -64,7 +66,7 @@ public class Maze {
 					removed = removed.getPrevious();
 					if (animate) {
 						try {
-							Thread.sleep(500);
+							Thread.sleep(200);
 						} catch(InterruptedException ex) {
 							Thread.currentThread().interrupt();
 						}
@@ -89,7 +91,7 @@ public class Maze {
 			front.dequeue();
 			if (animate) {
 				try {
-					Thread.sleep(500);
+					Thread.sleep(200);
 				} catch(InterruptedException ex) {
 					Thread.currentThread().interrupt();
 				}
@@ -151,7 +153,7 @@ public class Maze {
     }
 
     public static void main(String[]args) {
-		Maze maze = new Maze();
+		Maze maze = new Maze("maze.txt");
 		maze.solveBFS(true);
     }
 }
