@@ -52,9 +52,9 @@ public class Maze {
 		Frontier front = new Frontier(mode);
 		front.enqueue(findStart());
 		while (!front.isEmpty()) {
-			System.out.println(front);
+			//System.out.println(front);
 			Coordinate removed = front.dequeue();
-			System.out.println(front);
+			//System.out.println(front);
 			//System.out.println(removed);
 			if (array[removed.getY()][removed.getX()] == 'E') {
 			while (removed != null) {
