@@ -21,8 +21,8 @@ public class MyDeque<T> {
             output += array[(head+index) % array.length] + " ";
             index++;
         }
-        return "[ " + output + "]";
-        //return "[ " + output + "] " + "Tail: " + tail + " Head: " + head + "\n" + Arrays.toString(array);
+        //return "[ " + output + "]";
+        return "[ " + output + "] " + "Tail: " + tail + " Head: " + head + "\n" + Arrays.toString(array);
     }
 
     public T getFirst() {
@@ -39,9 +39,11 @@ public class MyDeque<T> {
 	    }
     	T output = (T)array[head];
     	array[head] = null;
-    	if (head == array.length - 1) {
-    	    head = 0;
-    	}else {
+    	if (size == 1) {
+    	    head = tail;
+    	}else if (head == array.length - 1) {
+			head = 0;
+		}else {
     	    head++;
     	}
     	size--;
@@ -54,9 +56,11 @@ public class MyDeque<T> {
     	}
     	T output = (T)array[tail];
     	array[tail] = null;
-    	if (tail == 0) {
-    	    tail = array.length - 1;
-    	}else {
+    	if (size == 1) {
+    	    tail = head;
+    	}else if (tail == 0) {
+			tail = array.length - 1;
+		}else {
     	    tail--;
     	}
     	size--;
@@ -116,11 +120,10 @@ public class MyDeque<T> {
     public static void main(String[]args) {
         MyDeque<Integer> d = new MyDeque<Integer>();
         d.addFirst(5);
-        d.addLast(7);
-        d.addFirst(3);
-        d.addLast(9);
-        System.out.println(d);
-        d.addFirst(1);
-        System.out.println(d);
+		//d.addFirst(6);
+		d.removeFirst();
+		System.out.println(d);
+        d.addFirst(7);
+		System.out.println(d);
     }
 }

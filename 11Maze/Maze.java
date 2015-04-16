@@ -49,49 +49,54 @@ public class Maze {
 	return null;
     }
     public boolean solve(boolean animate, int mode) {
-	Frontier front = new Frontier(mode);
-	front.enqueue(findStart());
-	while (!front.isEmpty()) {
-	    Coordinate removed = front.dequeue();
-	    System.out.println(removed);
-	    if (array[removed.getY()][removed.getX()] == 'E') {
-		while (removed != null) {
-		    array[removed.getY()][removed.getX()] = '@';
-		    removed = removed.getPrevious();
-		    if (animate) {
-			try {
-			    Thread.sleep(200);
-			} catch(InterruptedException ex) {
-			    Thread.currentThread().interrupt();
+		Frontier front = new Frontier(mode);
+		front.enqueue(findStart());
+		while (!front.isEmpty()) {
+			System.out.println(front);
+			Coordinate removed = front.dequeue();
+			System.out.println(front);
+			//System.out.println(removed);
+			if (array[removed.getY()][removed.getX()] == 'E') {
+			while (removed != null) {
+				array[removed.getY()][removed.getX()] = '@';
+				removed = removed.getPrevious();
+				if (animate) {
+					try {
+						Thread.sleep(200);
+					} catch(InterruptedException ex) {
+						Thread.currentThread().interrupt();
+					}
+					System.out.println(clear + hide + go(0,0) +  this + show);
+				}
 			}
-			System.out.println(clear + hide + go(0,0) +  this + show);
-		    }
+			return true;
+			}
+			array[removed.getY()][removed.getX()] = 'X';
+			//System.out.println(front);
+			if (array[removed.getY()+1][removed.getX()] != '#' && array[removed.getY()+1][removed.getX()] != 'X') {
+				front.enqueue(new Coordinate(removed.getX(), removed.getY()+1, removed));
+			}
+			//System.out.println(front);
+			if (array[removed.getY()-1][removed.getX()] != '#' && array[removed.getY()-1][removed.getX()] != 'X') {
+				front.enqueue(new Coordinate(removed.getX(), removed.getY()-1, removed));
+			}
+			if (array[removed.getY()][removed.getX()+1] != '#' && array[removed.getY()][removed.getX()+1] != 'X') {
+				front.enqueue(new Coordinate(removed.getX()+1, removed.getY(), removed));
+			}
+			if (array[removed.getY()][removed.getX()-1] != '#' && array[removed.getY()][removed.getX()-1] != 'X') {
+				front.enqueue(new Coordinate(removed.getX()-1, removed.getY(), removed));
+			}
+			if (animate) {
+				try {
+					Thread.sleep(200);
+				} catch(InterruptedException ex) {
+					Thread.currentThread().interrupt();
+				}
+				System.out.println(clear + hide + go(0,0) + this + "\n" + front + show);
+			}
+			System.out.println("----------------------");
 		}
-		return true;
-	    }
-	    array[removed.getY()][removed.getX()] = 'X';
-	    if (array[removed.getY()+1][removed.getX()] != '#' && array[removed.getY()+1][removed.getX()] != 'X') {
-		front.enqueue(new Coordinate(removed.getX(), removed.getY()+1, removed));
-	    }
-	    if (array[removed.getY()-1][removed.getX()] != '#' && array[removed.getY()-1][removed.getX()] != 'X') {
-		front.enqueue(new Coordinate(removed.getX(), removed.getY()-1, removed));
-	    }
-	    if (array[removed.getY()][removed.getX()+1] != '#' && array[removed.getY()][removed.getX()+1] != 'X') {
-		front.enqueue(new Coordinate(removed.getX()+1, removed.getY(), removed));
-	    }
-	    if (array[removed.getY()][removed.getX()-1] != '#' && array[removed.getY()][removed.getX()-1] != 'X') {
-		front.enqueue(new Coordinate(removed.getX()-1, removed.getY(), removed));
-	    }
-	    if (animate) {
-		try {
-		    Thread.sleep(200);
-		} catch(InterruptedException ex) {
-		    Thread.currentThread().interrupt();
-		}
-		System.out.println(clear + hide + go(0,0) + this + "\n" + front + show);
-	    }
-	}
-	return false;
+		return false;
     }
     public boolean solveBFS(boolean animate) {
 	return solve(animate, BFS);
@@ -105,49 +110,48 @@ public class Maze {
 	private int x;
 	private int y;
 	private Coordinate previous;
-	public Coordinate(int x, int y, Coordinate previous) {
-	    this.x = x;
-	    this.y = y;
-	    this.previous = previous;
-	}
-	public String toString() {
-	    return "(" + x + ", " + y + ")";
-	}
-	public int getX() {return x;}
-	public int getY() {return y;}
-	public Coordinate getPrevious() {return previous;}
+		public Coordinate(int x, int y, Coordinate previous) {
+			this.x = x;
+			this.y = y;
+			this.previous = previous;
+		}
+		public String toString() {
+			return "(" + y + ", " + x + ")";
+		}
+		public int getX() {return x;}
+		public int getY() {return y;}
+		public Coordinate getPrevious() {return previous;}
     }
     private class Frontier{
-	private MyDeque<Coordinate> queue = new MyDeque<Coordinate>();
-	private int mode;
+		private MyDeque<Coordinate> queue = new MyDeque<Coordinate>();
+		private int mode;
 
-
-	public Frontier(int mode) {
-	    this.mode = mode;
-	}
-	public String toString() {
-	    System.out.println(queue);
-	    return "";
-	}
-	public Coordinate enqueue(Coordinate cor) {
-	    queue.addLast(cor);
-	    return cor;
-	}
-	public Coordinate dequeue() {
-	    if (mode == 0) {
-		return queue.removeLast();
-	    }else if (mode == 1) {
-		return queue.removeFirst();
-	    }else {
-		return null;
-	    }
-	}
-	public Coordinate peek() {
-	    return queue.getFirst();
-	}
-	public boolean isEmpty() {
-	    return queue.getLength() == 0;
-	}
+		public Frontier(int mode) {
+			this.mode = mode;
+		}
+		public String toString() {
+			System.out.println(queue);
+			return "";
+		}
+		public Coordinate enqueue(Coordinate cor) {
+			queue.addFirst(cor);
+			return cor;
+		}
+		public Coordinate dequeue() {
+			if (mode == 0) {
+				return queue.removeFirst();
+			}else if (mode == 1) {
+				return queue.removeLast();
+			}else {
+				return null;
+			}
+		}
+		public Coordinate peek() {
+			return queue.getFirst();
+		}
+		public boolean isEmpty() {
+			return queue.getLength() == 0;
+		}
     }
     public static void main(String[]args) {
 	Maze maze = new Maze("maze.txt");
