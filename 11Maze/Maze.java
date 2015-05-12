@@ -200,7 +200,7 @@ public class Maze {
 		}
     }
     public static void main(String[]args) {
-		Maze maze = new Maze("data3.dat");
-		maze.solveBest(true);
+		Maze maze = new Maze("maze.txt");
+		maze.solveAStar(true);
     }
 }
