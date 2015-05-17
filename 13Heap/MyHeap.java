@@ -11,10 +11,14 @@ public class MyHeap {
     private static final int DOWN = -1;
 
     public MyHeap() {
-	this(MAX);
+	this(true);
     }
-    public MyHeap(int mode) {
-	this.mode = mode;
+    public MyHeap(boolean isMax) {
+	if (isMax) {
+		mode = MAX;
+	}else {
+		mode = MIN;
+	}
 	heap = new int[4];
     }
 
